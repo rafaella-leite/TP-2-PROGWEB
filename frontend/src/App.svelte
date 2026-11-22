@@ -1,89 +1,354 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from './assets/vite.svg'
-  import heroImg from './assets/hero.png'
-  import Counter from './lib/Counter.svelte'
+  import Dashboard from './pages/Dashboard.svelte';
+
+  let paginaAtual = 'Dashboard';
+
+  const menu = [
+    {
+      grupo: 'GERENCIAMENTO',
+      itens: [
+        { nome: 'Dashboard', icone: '▦' },
+        { nome: 'TCCs', icone: '▤' },
+        { nome: 'Alunos', icone: '♙' },
+        { nome: 'Professores', icone: '♧' }
+      ]
+    },
+    {
+      grupo: 'INSTITUCIONAL',
+      itens: [
+        { nome: 'Cursos', icone: '▣' },
+        { nome: 'Departamentos', icone: '▥' },
+        { nome: 'Unidades acadêmicas', icone: '⌂' }
+      ]
+    }
+  ];
 </script>
 
-<section id="center">
-  <div class="hero">
-    <img src={heroImg} class="base" width="170" height="179" alt="" />
-    <img src={svelteLogo} class="framework" alt="Svelte logo" />
-    <img src={viteLogo} class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/App.svelte</code> and save to test <code>HMR</code></p>
-  </div>
-  <Counter />
-</section>
+<svelte:head>
+  <title>Gestão de TCCs</title>
+  <meta
+    name="description"
+    content="Sistema de gerenciamento de Trabalhos de Conclusão de Curso"
+  />
+</svelte:head>
 
-<div class="ticks"></div>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-heading">GESTÃO ACADÊMICA</div>
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#documentation-icon"></use>
-    </svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-          <img class="logo" src={viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://svelte.dev/" target="_blank" rel="noreferrer">
-          <img class="button-icon" src={svelteLogo} alt="" />
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#social-icon"></use>
-    </svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li>
-        <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#github-icon"></use>
-          </svg>
-          GitHub
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#discord-icon"></use>
-          </svg>
-          Discord
-        </a>
-      </li>
-      <li>
-        <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#x-icon"></use>
-          </svg>
-          X.com
-        </a>
-      </li>
-      <li>
-        <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#bluesky-icon"></use>
-          </svg>
-          Bluesky
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
+      <nav>
+        {#each menu as grupo}
+          <div class="menu-group">
+            <span class="group-title">{grupo.grupo}</span>
 
-<div class="ticks"></div>
-<section id="spacer"></section>
+            {#each grupo.itens as item}
+              <button
+                class:active={paginaAtual === item.nome}
+                class="menu-item"
+                onclick={() => paginaAtual = item.nome}
+              >
+                <span class="menu-icon">{item.icone}</span>
+                <span>{item.nome}</span>
+              </button>
+            {/each}
+          </div>
+        {/each}
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-footer">
+        <span class="footer-dot"></span>
+        Sistema acadêmico
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="header">
+      <div class="breadcrumb">
+        <span>Início</span>
+        <span class="breadcrumb-separator">/</span>
+        <strong>{paginaAtual}</strong>
+      </div>
+
+      <div class="header-actions">
+        <span class="header-date">
+          Painel de gerenciamento
+        </span>
+
+        <div class="profile">
+          <div class="profile-avatar">A</div>
+          <div class="profile-info">
+            <strong>Administrador</strong>
+            <span>Gestão acadêmica</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <section class="page-content">
+      {#if paginaAtual === 'Dashboard'}
+        <Dashboard />
+      {:else}
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">GERENCIAMENTO</span>
+            <h1>{paginaAtual}</h1>
+            <p>Área reservada para o módulo {paginaAtual}.</p>
+          </div>
+        </div>
+      {/if}
+    </section>
+
+  </main>
+</div>
+
+<style>
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px 18px 20px;
+  }
+
+  .sidebar-heading {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    padding: 0 12px;
+    margin-bottom: 42px;
+    color: #D2E8DF;
+  }
+
+  .menu-group {
+    margin-bottom: 30px;
+  }
+
+  .group-title {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #A9C5BA;
+    padding: 0 12px;
+    margin-bottom: 12px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 9px;
+    color: #D5E4DD;
+    background: transparent;
+    text-align: left;
+    font-size: 13px;
+    margin-bottom: 5px;
+    transition: background 0.2s;
+  }
+
+  .menu-item:hover,
+  .menu-item.active {
+    background: #397568;
+    color: white;
+  }
+
+  .menu-icon {
+    width: 20px;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px;
+    color: #D2E8DF;
+    font-size: 11px;
+    border-top: 1px solid #397568;
+  }
+
+  .footer-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #75A99A;
+  }
+
+  .main-area {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header {
+    height: 76px;
+    background: white;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 38px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  .breadcrumb strong {
+    color: var(--color-text);
+  }
+
+  .breadcrumb-separator {
+    color: #C4CEC8;
+  }
+
+  .header-actions,
+  .profile {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-actions {
+    gap: 25px;
+  }
+
+  .header-date {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  .profile {
+    gap: 10px;
+  }
+
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-mint);
+    color: var(--color-primary);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 11px;
+    gap: 2px;
+  }
+
+  .profile-info span {
+    color: var(--color-text-secondary);
+  }
+
+  .page-content {
+    padding: 38px;
+  }
+
+  .page-heading {
+    margin-bottom: 30px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--color-secondary);
+  }
+
+  .page-heading h1 {
+    font-size: 28px;
+    margin: 7px 0;
+  }
+
+  .page-heading p {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+  }
+
+  .dashboard-placeholder {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 55px 25px;
+    text-align: center;
+  }
+
+  .placeholder-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--color-mint);
+    color: var(--color-primary);
+    font-size: 24px;
+    margin: 0 auto 15px;
+  }
+
+  .dashboard-placeholder h2 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-placeholder p {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .sidebar {
+      width: 65px;
+      min-width: 65px;
+      padding: 20px 7px;
+    }
+
+    .sidebar-heading,
+    .group-title,
+    .menu-item span:not(.menu-icon),
+    .sidebar-footer {
+      display: none;
+    }
+
+    .menu-item {
+      justify-content: center;
+      padding: 12px 5px;
+    }
+
+    .header {
+      padding: 0 16px;
+    }
+
+    .header-date,
+    .profile-info {
+      display: none;
+    }
+
+    .page-content {
+      padding: 24px 16px;
+    }
+  }
+</style>

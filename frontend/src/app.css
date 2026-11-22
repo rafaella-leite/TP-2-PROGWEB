@@ -294,3 +294,27 @@ code {
     border-right-color: var(--border);
   }
 }
+
+:root {
+    color-scheme: light;
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+}
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
