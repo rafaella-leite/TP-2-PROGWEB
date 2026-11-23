@@ -91,4 +91,9 @@
     color: var(--color-text-light);
     margin-top: 3px;
   }
+
+  .card-icon.red {
+    background: #FCEAEA;
+    color: #C96B6B;
+  }
 </style>
