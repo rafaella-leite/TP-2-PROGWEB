@@ -155,64 +155,37 @@ def popular_banco():
     # 6. TCCs
     # -------------------------------------------------
 
+    
     tccs_dados = [
-        ('Desenvolvimento de uma plataforma de acessibilidade web',
-         '0', 'MONOGRAFIA', 'PT'),
+        # EM ELABORAÇÃO: 5
+        ('Desenvolvimento de uma plataforma de acessibilidade web', '0', 'MONOGRAFIA', 'PT'),
+        ('Inteligência artificial aplicada à educação', '0', 'ARTIGO', 'PT'),
+        ('Análise de experiência do usuário em sistemas acadêmicos', '0', 'MONOGRAFIA', 'PT'),
+        ('Segurança da informação em aplicações web', '0', 'ARTIGO', 'EN'),
+        ('Aplicações de aprendizado de máquina na saúde', '0', 'MONOGRAFIA', 'PT'),
 
-        ('Inteligência artificial aplicada à educação',
-         '0', 'ARTIGO', 'PT'),
+        # ENVIADOS: 5
+        ('Desenvolvimento de um sistema de gestão acadêmica', '1', 'RELATORIO_TECNICO', 'PT'),
+        ('Análise de usabilidade em aplicativos móveis', '1', 'MONOGRAFIA', 'PT'),
+        ('Automação de processos organizacionais', '1', 'RELATORIO_ESTAGIO', 'PT'),
+        ('Impactos da transformação digital nas empresas', '1', 'ARTIGO', 'PT'),
+        ('Arquitetura de software para sistemas distribuídos', '1', 'MONOGRAFIA', 'EN'),
 
-        ('Análise de experiência do usuário em sistemas acadêmicos',
-         '0', 'MONOGRAFIA', 'PT'),
+        # APROVADOS: 5
+        ('Tecnologias assistivas no ambiente educacional', '2', 'ARTIGO', 'PT'),
+        ('Gestão de projetos utilizando metodologias ágeis', '2', 'MONOGRAFIA', 'PT'),
+        ('Análise de dados aplicada à tomada de decisão', '2', 'ARTIGO', 'EN'),
+        ('Sistema inteligente de recomendação acadêmica', '2', 'MONOGRAFIA', 'PT'),
+        ('O uso de tecnologias digitais na educação superior', '2', 'RELATORIO_ESTAGIO', 'PT'),
 
-        ('Segurança da informação em aplicações web',
-         '0', 'ARTIGO', 'EN'),
-
-        ('Aplicações de aprendizado de máquina na saúde',
-         '0', 'MONOGRAFIA', 'PT'),
-
-        ('Desenvolvimento de um sistema de gestão acadêmica',
-         '0', 'RELATORIO_TECNICO', 'PT'),
-
-        ('Análise de usabilidade em aplicativos móveis',
-         '0', 'MONOGRAFIA', 'PT'),
-
-        ('Automação de processos organizacionais',
-         '0', 'RELATORIO_ESTAGIO', 'PT'),
-
-        ('Impactos da transformação digital nas empresas',
-         '1', 'ARTIGO', 'PT'),
-
-        ('Arquitetura de software para sistemas distribuídos',
-         '1', 'MONOGRAFIA', 'EN'),
-
-        ('Tecnologias assistivas no ambiente educacional',
-         '1', 'ARTIGO', 'PT'),
-
-        ('Desenvolvimento de aplicações com computação em nuvem',
-         '1', 'RELATORIO_TECNICO', 'PT'),
-
-        ('Gestão de projetos utilizando metodologias ágeis',
-         '1', 'MONOGRAFIA', 'PT'),
-
-        ('Análise de dados aplicada à tomada de decisão',
-         '2', 'ARTIGO', 'EN'),
-
-        ('Sistema inteligente de recomendação acadêmica',
-         '2', 'MONOGRAFIA', 'PT'),
-
-        ('O uso de tecnologias digitais na educação superior',
-         '2', 'RELATORIO_ESTAGIO', 'PT'),
-
-        ('Desenvolvimento de uma API para gestão de documentos',
-         '2', 'RELATORIO_TECNICO', 'PT'),
-
-        ('Análise de desempenho em redes de computadores',
-         '3', 'MONOGRAFIA', 'PT'),
-
-        ('Aplicação de técnicas de mineração de dados',
-         '3', 'ARTIGO', 'EN'),
+        # REPROVADOS: 5
+        ('Desenvolvimento de API para gestão de documentos', '3', 'RELATORIO_TECNICO', 'PT'),
+        ('Análise de desempenho em redes de computadores', '3', 'MONOGRAFIA', 'PT'),
+        ('Aplicação de técnicas de mineração de dados', '3', 'ARTIGO', 'EN'),
+        ('Estudo de segurança em aplicações distribuídas', '3', 'ARTIGO', 'PT'),
+        ('Sistema de monitoramento de infraestrutura', '3', 'RELATORIO_TECNICO', 'PT'),
     ]
+
 
     tipos = [
         'MONOGRAFIA',
@@ -248,7 +221,7 @@ def popular_banco():
             else None
         )
 
-        tcc, criado = TCC.objects.get_or_create(
+        tcc, criado = TCC.objects.update_or_create(
             titulo=titulo,
             defaults={
                 'resumo': (

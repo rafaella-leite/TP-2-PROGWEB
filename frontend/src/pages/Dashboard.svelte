@@ -44,13 +44,14 @@
     // Busca a quantidade de TCCs de determinado status.
 
     /**
+     * @param {Record<string, number> | undefined} porStatus
      * @param {string} nome
      * @returns {number}
      */
-    function buscarStatus(nome) {
-        if (!estatisticas?.por_status) return 0;
+    function buscarStatus(porStatus, nome) {
+        if (!porStatus) return 0;
 
-        const entrada = Object.entries(estatisticas.por_status)
+        const entrada = Object.entries(porStatus)
             .find(([chave]) => normalizar(chave) === normalizar(nome));
 
         return entrada ? entrada[1] : 0;
@@ -60,10 +61,17 @@
 
     $: total = estatisticas?.total_geral ?? 0;
 
-    $: aprovados = buscarStatus('Aprovado');
-    $: enviados = buscarStatus('Enviado');
-    $: elaboracao = buscarStatus('Em Elaboração');
-    $: reprovados = buscarStatus('Reprovado');
+    $: aprovados = buscarStatus(estatisticas?.por_status, 'Aprovado');
+
+    $: enviados = buscarStatus(estatisticas?.por_status, 'Enviado');
+
+    $: elaboracao = buscarStatus(estatisticas?.por_status, 'Em Elaboração');
+
+    $: reprovados = buscarStatus(estatisticas?.por_status, 'Reprovado');
+
+    $: taxaAprovacao = total > 0
+        ? ((aprovados / total) * 100).toFixed(1)
+        : '0.0';
 
     // Dados dos gráficos.
 
@@ -80,6 +88,65 @@
         1,
         ...orientadores.map(([, quantidade]) => quantidade)
     );
+
+
+    // Dados para as novas visualizações.
+
+    $: tipos = Object.entries(estatisticas?.por_tipo ?? {})
+        .filter(([, quantidade]) => quantidade > 0)
+        .sort((a, b) => b[1] - a[1]);
+
+    $: totalTipos = tipos.reduce(
+        (soma, [, quantidade]) => soma + quantidade,
+        0
+    );
+
+    $: cursos = Object.entries(estatisticas?.por_curso ?? {})
+        .filter(([nome, quantidade]) => nome && nome !== 'None' && quantidade > 0)
+        .sort((a, b) => b[1] - a[1]);
+
+    $: maiorTotalCurso = Math.max(
+        1,
+        ...cursos.map(([, quantidade]) => quantidade)
+    );
+
+    $: semestres = Object.entries(estatisticas?.por_semestre ?? {})
+        .filter(([nome, quantidade]) => nome && quantidade > 0)
+        .sort(([a], [b]) => a.localeCompare(b));
+
+    $: maiorTotalSemestre = Math.max(
+        1,
+        ...semestres.map(([, quantidade]) => quantidade)
+    );
+
+    // Cores do gráfico de rosca.
+
+    const coresTipos = [
+        '#204C43',
+        '#397568',
+        '#75A99A',
+        '#D6A65D',
+        '#6B91A1'
+    ];
+
+    $: donutStyle = (() => {
+        if (totalTipos === 0) {
+            return 'conic-gradient(#E8EEEA 0% 100%)';
+        }
+
+        let acumulado = 0;
+
+        const fatias = tipos.map(([, quantidade], indice) => {
+            const inicio = acumulado;
+            acumulado += (quantidade / totalTipos) * 100;
+
+            const cor = coresTipos[indice % coresTipos.length];
+
+            return `${cor} ${inicio}% ${acumulado}%`;
+        });
+
+        return `conic-gradient(${fatias.join(', ')})`;
+    })();
 
     // Consulta a API do Django.
 
@@ -172,6 +239,7 @@
 
         <!-- CARDS DE INDICADORES -->
 
+        
         <section class="stats-grid">
 
             <StatCard
@@ -204,7 +272,23 @@
                 color="blue"
             />
 
+            <StatCard
+                title="Reprovados"
+                value={String(reprovados)}
+                description="Trabalhos reprovados"
+                icon="×"
+                color="red"
+            />
+
+            <StatCard
+                title="Taxa de aprovação"
+                value={`${taxaAprovacao}%`}
+                description="Aprovados sobre o total"
+                icon="%"
+            />
+
         </section>
+
 
         <!-- GRÁFICOS -->
 
@@ -318,6 +402,127 @@
 
         </section>
 
+
+        <section class="extra-charts-grid">
+
+            <!-- TCCs POR TIPO -->
+
+            <div class="chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <h2>TCCs por tipo</h2>
+                        <p>Distribuição por modalidade de trabalho</p>
+                    </div>
+                </div>
+
+                {#if totalTipos > 0}
+                    <div class="donut-content">
+                        <div
+                            class="donut-chart"
+                            style={`background: ${donutStyle}`}
+                        >
+                            <div class="donut-center">
+                                <strong>{totalTipos}</strong>
+                                <span>Trabalhos</span>
+                            </div>
+                        </div>
+
+                        <div class="donut-legend">
+                            {#each tipos as tipo, i}
+                                <div class="legend-item">
+                                    <div class="legend-name">
+                                        <span
+                                            class="legend-dot"
+                                            style={`background: ${coresTipos[i % coresTipos.length]}`}
+                                        ></span>
+                                        <span>{tipo[0]}</span>
+                                    </div>
+                                    <strong>{tipo[1]}</strong>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+
+                {:else}
+                    <p class="empty-state">
+                        Nenhum dado de tipo disponível.
+                    </p>
+                {/if}
+            </div>
+
+            <!-- TCCs POR CURSO -->
+
+            <div class="chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <h2>TCCs por curso</h2>
+                        <p>Quantidade de trabalhos por curso</p>
+                    </div>
+                </div>
+
+                {#if cursos.length > 0}
+                    <div class="bar-list">
+                        {#each cursos as curso}
+                            <div class="bar-item">
+                                <div class="bar-info">
+                                    <span>{curso[0]}</span>
+                                    <strong>{curso[1]}</strong>
+                                </div>
+
+                                <div class="progress-track">
+                                    <div
+                                        class="progress-fill course-fill"
+                                        style={`width: ${(curso[1] / maiorTotalCurso) * 100}%`}
+                                    ></div>
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
+
+                {:else}
+                    <p class="empty-state">
+                        Nenhum dado de curso disponível.
+                    </p>
+                {/if}
+            </div>
+
+            <!-- TCCs POR SEMESTRE -->
+
+            <div class="chart-card semester-card">
+                <div class="chart-heading">
+                    <div>
+                        <h2>TCCs por semestre</h2>
+                        <p>Distribuição dos trabalhos por período letivo</p>
+                    </div>
+                </div>
+
+                {#if semestres.length > 0}
+                    <div class="bar-list semester-list">
+                        {#each semestres as semestre}
+                            <div class="bar-item">
+                                <div class="bar-info">
+                                    <span>{semestre[0]}</span>
+                                    <strong>{semestre[1]}</strong>
+                                </div>
+
+                                <div class="progress-track">
+                                    <div
+                                        class="progress-fill semester-fill"
+                                        style={`width: ${(semestre[1] / maiorTotalSemestre) * 100}%`}
+                                    ></div>
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
+
+                {:else}
+                    <p class="empty-state">
+                        Nenhum dado de semestre disponível.
+                    </p>
+                {/if}
+            </div>
+        </section>
+
         <!-- RESUMO GERAL -->
 
         <section class="summary-card">
@@ -410,7 +615,7 @@
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
     }
 
@@ -603,4 +808,158 @@
             grid-template-columns: 1fr;
         }
     }
+
+    .extra-charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    /* GRÁFICO DE ROSCA */
+
+    .donut-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        min-height: 190px;
+        flex-wrap: wrap;
+    }
+
+    .donut-chart {
+        width: 164px;
+        height: 164px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .donut-center {
+        width: 108px;
+        height: 108px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .donut-center strong {
+        font-family: Manrope, sans-serif;
+        font-size: 27px;
+        color: var(--color-primary);
+    }
+
+    .donut-center span {
+        font-size: 11px;
+        color: var(--color-text-secondary);
+    }
+
+    .donut-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+        flex: 1;
+        min-width: 130px;
+    }
+
+    .legend-item,
+    .legend-name {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .legend-item {
+        justify-content: space-between;
+        font-size: 12px;
+    }
+
+    .legend-name {
+        color: var(--color-text-secondary);
+    }
+
+    .legend-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    /* GRÁFICOS DE BARRAS */
+
+    .bar-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .bar-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .bar-info {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+    }
+
+    .bar-info span {
+        color: var(--color-text-secondary);
+    }
+
+    .bar-info strong {
+        color: var(--color-text);
+    }
+
+    .course-fill {
+        background: var(--color-secondary);
+    }
+
+    .semester-fill {
+        background: var(--color-primary-hover);
+    }
+
+    .semester-card {
+        grid-column: 1 / -1;
+    }
+
+    .semester-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 32px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1100px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 760px) {
+        .charts-grid,
+        .extra-charts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
 </style>
