@@ -1,5 +1,7 @@
 <script>
   import Dashboard from './pages/Dashboard.svelte';
+  import TCCs from './pages/TCCs.svelte';
+
 
   let paginaAtual = 'Dashboard';
 
@@ -92,6 +94,10 @@
     <section class="page-content">
       {#if paginaAtual === 'Dashboard'}
         <Dashboard />
+
+      {:else if paginaAtual === 'TCCs'}
+        <TCCs />
+
       {:else}
         <div class="page-heading">
           <div>
@@ -113,14 +119,27 @@
   }
 
   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+
     width: 250px;
     min-width: 250px;
+    height: 100vh;
+
     background: var(--color-primary);
     color: white;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
     padding: 30px 18px 20px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    z-index: 100;
   }
 
   .sidebar-heading {
@@ -195,6 +214,7 @@
   .main-area {
     flex: 1;
     min-width: 0;
+    margin-left: 250px;
   }
 
   .header {
