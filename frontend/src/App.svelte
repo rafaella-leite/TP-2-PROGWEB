@@ -28,9 +28,15 @@
 
 <svelte:head>
   <title>Gestão de TCCs</title>
+
   <meta
     name="description"
     content="Sistema de gerenciamento de Trabalhos de Conclusão de Curso"
+  />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
   />
 </svelte:head>
 
@@ -212,9 +218,11 @@
   }
 
   .main-area {
-    flex: 1;
-    min-width: 0;
-    margin-left: 250px;
+      flex: 1;
+      min-width: 0;
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      box-sizing: border-box;
   }
 
   .header {
@@ -285,7 +293,10 @@
   }
 
   .page-content {
+    width: 100%;
+    min-width: 0;
     padding: 38px;
+    box-sizing: border-box;
   }
 
   .page-heading {
@@ -340,10 +351,9 @@
   }
 
   @media (max-width: 760px) {
-    .sidebar {
-      width: 65px;
-      min-width: 65px;
-      padding: 20px 7px;
+    .main-area {
+        width: calc(100% - 65px);
+        margin-left: 65px;
     }
 
     .sidebar-heading,
@@ -368,7 +378,36 @@
     }
 
     .page-content {
-      padding: 24px 16px;
+        width: 100%;
+        padding: 20px 12px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .app-layout .sidebar {
+      width: 65px !important;
+      min-width: 65px !important;
+      max-width: 65px !important;
+      flex: 0 0 65px;
+      box-sizing: border-box;
+      padding: 20px 7px;
+    }
+
+    .app-layout .main-area {
+      margin-left: 65px;
+      width: calc(100% - 65px);
+    }
+
+    .app-layout .sidebar-heading,
+    .app-layout .group-title,
+    .app-layout .menu-item span:not(.menu-icon),
+    .app-layout .sidebar-footer {
+      display: none;
+    }
+
+    .app-layout .menu-item {
+      justify-content: center;
+      padding: 12px 5px;
     }
   }
 </style>

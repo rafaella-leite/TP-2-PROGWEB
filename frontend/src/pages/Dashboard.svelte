@@ -555,20 +555,23 @@
 
 <style>
     /* ESTRUTURA GERAL */
-
     .dashboard {
         display: flex;
         flex-direction: column;
         gap: 24px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
     /* CABEÇALHO */
-
     .page-heading {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
         gap: 16px;
+        min-width: 0;
     }
 
     .eyebrow,
@@ -588,10 +591,10 @@
     .chart-heading p {
         color: var(--color-text-secondary);
         font-size: 13px;
+        line-height: 1.5;
     }
 
     /* BOTÃO ATUALIZAR */
-
     .refresh-button {
         border: 1px solid var(--color-border);
         background: white;
@@ -600,6 +603,7 @@
         border-radius: var(--radius-sm);
         font-weight: 600;
         transition: background .2s ease;
+        cursor: pointer;
     }
 
     .refresh-button:hover {
@@ -612,28 +616,40 @@
     }
 
     /* CARDS */
-
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
+        min-width: 0;
+    }
+
+    .stats-grid > * {
+        min-width: 0;
     }
 
     /* GRÁFICOS */
-
-    .charts-grid {
+    .charts-grid,
+    .extra-charts-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 18px;
+        min-width: 0;
     }
 
     .chart-card,
     .summary-card {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         padding: 22px;
         box-shadow: var(--shadow-card);
+    }
+
+    .chart-card {
+        overflow: hidden;
     }
 
     .chart-heading {
@@ -647,7 +663,6 @@
     }
 
     /* LISTAS DOS GRÁFICOS */
-
     .status-list,
     .orientador-list {
         display: flex;
@@ -675,7 +690,6 @@
     }
 
     /* BARRAS DE PROGRESSO */
-
     .progress-track {
         height: 8px;
         background: var(--color-background);
@@ -695,7 +709,6 @@
     }
 
     /* RESUMO */
-
     .summary-card {
         display: flex;
         align-items: center;
@@ -710,6 +723,7 @@
     .summary-card p {
         color: var(--color-text-secondary);
         font-size: 13px;
+        line-height: 1.6;
         margin-top: 8px;
     }
 
@@ -730,7 +744,6 @@
     }
 
     /* ESTADO VAZIO */
-
     .empty-state {
         color: var(--color-text-secondary);
         font-size: 13px;
@@ -738,7 +751,6 @@
     }
 
     /* CARREGAMENTO */
-
     .feedback {
         display: flex;
         flex-direction: column;
@@ -765,7 +777,6 @@
     }
 
     /* ERRO */
-
     .error-message {
         padding: 22px;
         background: #fff4f2;
@@ -784,39 +795,7 @@
         cursor: pointer;
     }
 
-    /* RESPONSIVIDADE */
-
-    @media (max-width: 1100px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 760px) {
-        .charts-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .page-heading {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .extra-charts-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-    }
-
     /* GRÁFICO DE ROSCA */
-
     .donut-content {
         display: flex;
         align-items: center;
@@ -824,6 +803,7 @@
         gap: 32px;
         min-height: 190px;
         flex-wrap: wrap;
+        min-width: 0;
     }
 
     .donut-chart {
@@ -890,7 +870,6 @@
     }
 
     /* GRÁFICOS DE BARRAS */
-
     .bar-list {
         display: flex;
         flex-direction: column;
@@ -936,30 +915,115 @@
         gap: 22px 32px;
     }
 
-    /* RESPONSIVIDADE */
+    /* PREVENÇÃO DE TRANSBORDAMENTO */
+    .page-heading,
+    .stats-grid,
+    .charts-grid,
+    .extra-charts-grid,
+    .chart-card,
+    .summary-card {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
 
+    .stats-grid > *,
+    .charts-grid > *,
+    .extra-charts-grid > * {
+        min-width: 0;
+    }
+
+    .bar-info span,
+    .status-info span,
+    .orientador-info span,
+    .legend-name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    /* TABLETS */
     @media (max-width: 1100px) {
         .stats-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
+    /* CELULARES */
     @media (max-width: 760px) {
-        .charts-grid,
-        .extra-charts-grid {
-            grid-template-columns: 1fr;
+        .dashboard {
+            gap: 18px;
         }
 
         .page-heading {
-            align-items: flex-start;
+            align-items: stretch;
             flex-direction: column;
+            gap: 14px;
+        }
+
+        .page-heading h1 {
+            font-size: 24px;
+        }
+
+        .page-heading p {
+            max-width: 100%;
+            line-height: 1.5;
+        }
+
+        .refresh-button {
+            width: 100%;
+            min-height: 42px;
+        }
+
+        .stats-grid,
+        .charts-grid,
+        .extra-charts-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .chart-card,
+        .summary-card {
+            padding: 17px;
+        }
+
+        .donut-content {
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .semester-card {
+            grid-column: auto;
+        }
+
+        .semester-list {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        .summary-card {
+            align-items: flex-start;
         }
     }
 
-    @media (max-width: 480px) {
-        .stats-grid {
-            grid-template-columns: 1fr;
+    /* CELULARES ESTREITOS */
+    @media (max-width: 380px) {
+        .chart-card,
+        .summary-card {
+            padding: 14px;
+        }
+
+        .donut-chart {
+            width: 140px;
+            height: 140px;
+        }
+
+        .donut-center {
+            width: 92px;
+            height: 92px;
+        }
+
+        .donut-legend {
+            flex-basis: 100%;
         }
     }
-
 </style>
