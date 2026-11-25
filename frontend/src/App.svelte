@@ -1,6 +1,7 @@
 <script>
   import Dashboard from './pages/Dashboard.svelte';
   import TCCs from './pages/TCCs.svelte';
+  import Alunos from './pages/Alunos.svelte';
 
 
   let paginaAtual = 'Dashboard';
@@ -103,6 +104,27 @@
 
       {:else if paginaAtual === 'TCCs'}
         <TCCs />
+
+      {:else}
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">GERENCIAMENTO</span>
+            <h1>{paginaAtual}</h1>
+            <p>Área reservada para o módulo {paginaAtual}.</p>
+          </div>
+        </div>
+      {/if}
+    </section>
+
+    <section class="page-content">
+      {#if paginaAtual === 'Dashboard'}
+        <Dashboard />
+
+      {:else if paginaAtual === 'TCCs'}
+        <TCCs />
+
+      {:else if paginaAtual === 'Alunos'}
+        <Alunos />
 
       {:else}
         <div class="page-heading">
@@ -318,36 +340,6 @@
   .page-heading p {
     color: var(--color-text-secondary);
     font-size: 13px;
-  }
-
-  .dashboard-placeholder {
-    background: white;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 55px 25px;
-    text-align: center;
-  }
-
-  .placeholder-icon {
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: var(--color-mint);
-    color: var(--color-primary);
-    font-size: 24px;
-    margin: 0 auto 15px;
-  }
-
-  .dashboard-placeholder h2 {
-    font-size: 17px;
-    margin-bottom: 8px;
-  }
-
-  .dashboard-placeholder p {
-    color: var(--color-text-secondary);
-    font-size: 12px;
   }
 
   @media (max-width: 760px) {

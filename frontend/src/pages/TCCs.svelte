@@ -478,7 +478,7 @@
 
 {#if modalOpen}
   <div class="modal-overlay" role="presentation">
-    <section
+    <div
       class="modal"
       role="dialog"
       aria-modal="true"
@@ -737,7 +737,7 @@
           </footer>
         </form>
       {/if}
-    </section>
+    </div>
   </div>
 {/if}
 
